@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>План свадьбы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: одна колонка, липкая навигация по разделам, списки-таблицы без карточек на каждую строку, таймлайн с колонкой времени слева. */
+:root{
+  --bg:#F5F3F7; --card:#FFFFFF; --fg:#221C2B; --muted:#6B6475; --line:#E3DEE8;
+  --accent:#8A2C5E; --accent-fg:#FFFFFF; --ok:#2F7D5B; --ok-fg:#FFFFFF; --err:#B3261E;
+  --c-cer:#8A2C5E; --c-toast:#96660F; --c-game:#2F7D5B; --c-dance:#6A44B5; --c-food:#2C6FA8; --c-org:#6B6475;
+  --font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16121C; --card:#1F1A27; --fg:#EEE9F3; --muted:#A49CB0; --line:#332C3E;
+    --accent:#E58BB8; --accent-fg:#2A0F1D; --ok:#6FCF9F; --ok-fg:#0F2A1E; --err:#FF9C94;
+    --c-cer:#E58BB8; --c-toast:#E0B25A; --c-game:#6FCF9F; --c-dance:#B79CF0; --c-food:#7DB8EB; --c-org:#A49CB0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#16121C; --card:#1F1A27; --fg:#EEE9F3; --muted:#A49CB0; --line:#332C3E;
+  --accent:#E58BB8; --accent-fg:#2A0F1D; --ok:#6FCF9F; --ok-fg:#0F2A1E; --err:#FF9C94;
+  --c-cer:#E58BB8; --c-toast:#E0B25A; --c-game:#6FCF9F; --c-dance:#B79CF0; --c-food:#7DB8EB; --c-org:#A49CB0;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg); color:var(--fg); font-family:var(--font-body); font-size:15px; line-height:1.5;
+  padding-block:0 56px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.wrap{max-width:920px;margin:0 auto}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Hero */
+.hero{padding:36px 0 22px;display:grid;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--font-display);font-weight:600;font-size:clamp(38px,8vw,60px);line-height:1.02;margin:0;text-wrap:balance}
+.facts{display:flex;flex-wrap:wrap;gap:6px 18px;color:var(--muted);font-size:14px}
+.facts b{color:var(--fg);font-weight:600}
+.datebox{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.datebox label{font-size:13px;color:var(--muted)}
+.left{font-size:13px;font-weight:600;color:var(--accent)}
+.progress{display:grid;gap:6px;margin-top:4px}
+.progress-top{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--muted)}
+.progress-top b{color:var(--fg)}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar>i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+
+/* Nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  display:flex;gap:4px;overflow-x:auto;padding:8px 0;margin-bottom:8px}
+.navb{flex:none;background:none;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);white-space:nowrap}
+.navb:hover{color:var(--fg);background:var(--card)}
+.navb span{margin-left:6px;font-weight:500;font-variant-numeric:tabular-nums}
+
+/* Sections */
+section{padding-top:34px;scroll-margin-top:56px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+h2{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,5vw,36px);line-height:1.1;margin:0}
+.cnt{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sd{color:var(--muted);margin:6px 0 16px;max-width:65ch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px}
+.grp+.grp{border-top:1px solid var(--line)}
+.grp-h{display:flex;justify-content:space-between;align-items:baseline;padding:12px 14px 4px}
+.grp-h h3{margin:0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
+ul{list-style:none;margin:0;padding:0}
+.row{display:flex;align-items:flex-start;gap:6px;padding:8px 6px 8px 14px;border-top:1px solid var(--line)}
+.grp-h+ul .row:first-child{border-top:0}
+.row .txt small{display:block;color:var(--muted);font-size:12.5px;font-weight:500;text-decoration:none}
+.empty{padding:18px 14px;color:var(--muted);margin:0}
+
+/* Checkbox */
+.chk{position:relative;display:flex;gap:12px;align-items:flex-start;cursor:pointer;flex:1;min-width:0}
+.chk input{position:absolute;opacity:0;width:22px;height:22px;margin:0;top:1px;left:0;cursor:pointer}
+.box{flex:none;width:22px;height:22px;margin-top:1px;border:1.5px solid var(--muted);border-radius:6px;background:var(--card);display:grid;place-items:center}
+.box::after{content:"";width:6px;height:11px;border:solid var(--ok-fg);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px);opacity:0}
+.chk input:checked+.box{background:var(--ok);border-color:var(--ok)}
+.chk input:checked+.box::after{opacity:1}
+.chk input:focus-visible+.box{outline:2px solid var(--accent);outline-offset:2px}
+.txt{min-width:0;overflow-wrap:anywhere}
+.done .txt,.done .txt b{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--muted)}
+.done .txt small{text-decoration:none}
+.del{flex:none;width:34px;height:34px;border:0;border-radius:6px;background:none;color:var(--muted);font-size:22px;line-height:1;cursor:pointer}
+.del:hover{color:var(--err);background:color-mix(in srgb,var(--err) 10%,var(--card))}
+
+/* Timeline */
+.prow{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:6px 10px;padding:10px 6px 10px 14px;border-top:1px solid var(--line);align-items:start}
+.prow:first-child{border-top:0}
+.time{font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;padding-top:1px;position:relative}
+.pbody{min-width:0}
+.pmeta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:4px 0 0 34px;font-size:13px;color:var(--muted)}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.04em;padding:2px 8px;border-radius:4px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,var(--card))}
+.t-cer{--c:var(--c-cer)}.t-toast{--c:var(--c-toast)}.t-game{--c:var(--c-game)}.t-dance{--c:var(--c-dance)}.t-food{--c:var(--c-food)}.t-org{--c:var(--c-org)}
+.chip{font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;border:1px solid var(--line);border-radius:4px;padding:1px 7px;margin-left:8px;white-space:nowrap}
+
+/* Forms */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:12px}
+.form>*{min-width:0}
+.form input,.form select{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);font-size:16px}
+.form input::placeholder{color:var(--muted)}
+.form .err{border-color:var(--err)}
+.btn{height:42px;padding:0 18px;border:0;border-radius:6px;background:var(--accent);color:var(--accent-fg);font-weight:700;cursor:pointer;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:none;color:var(--muted);border:1px solid var(--line);font-weight:600;height:36px;font-size:13px}
+.form-t{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:16px 0 0}
+footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){.bar>i{transition:none}}
+@media (max-width:480px){.prow{grid-template-columns:52px minmax(0,1fr) auto}.pmeta{margin-left:0}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">Свадебный день · план и тайминг</div>
+    <h1>Свадьба на 200 гостей</h1>
+    <div class="facts">
+      <span><b>17:00 – 00:00</b> · 7 часов программы</span>
+      <span><b>20 столов</b> по 10 гостей</span>
+      <span><b>10–12</b> официантов, 2 хостес</span>
+    </div>
+    <div class="datebox">
+      <label for="wdate">Дата свадьбы</label>
+      <input id="wdate" type="date" style="height:38px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--card);font-size:16px">
+      <span class="left" id="left"></span>
+    </div>
+    <div class="progress">
+      <div class="progress-top"><span>Общая готовность: <b id="p-text">0 из 0</b></span><b id="p-pct">0%</b></div>
+      <div class="bar" role="progressbar" aria-label="Общая готовность" aria-valuemin="0" aria-valuemax="100" id="p-bar"><i id="p-fill"></i></div>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Разделы">
+    <button class="navb" type="button" data-go="prep">Подготовка<span id="n-prep"></span></button>
+    <button class="navb" type="button" data-go="duties">Обязанности<span id="n-duties"></span></button>
+    <button class="navb" type="button" data-go="program">Программа<span id="n-program"></span></button>
+    <button class="navb" type="button" data-go="toasts">Тосты<span id="n-toasts"></span></button>
+    <button class="navb" type="button" data-go="games">Игры<span id="n-games"></span></button>
+  </nav>
+
+  <section id="prep">
+    <div class="sh"><h2>Подготовка</h2><span class="cnt" id="c-prep"></span></div>
+    <p class="sd">Что сделать до свадьбы. У каждого пункта указан срок, отметьте галочкой то, что уже готово.</p>
+    <div class="panel" id="list-prep"></div>
+    <p class="form-t">Добавить пункт</p>
+    <form class="form" id="form-prep" autocomplete="off">
+      <input name="g" id="prep-g" list="dl-prep" placeholder="Раздел" aria-label="Раздел">
+      <input name="t" id="prep-t" placeholder="Что нужно сделать" aria-label="Что нужно сделать" style="grid-column:span 2">
+      <input name="m" id="prep-m" placeholder="Срок, например за 1 мес." aria-label="Срок">
+      <button class="btn" type="submit">Добавить</button>
+      <datalist id="dl-prep"></datalist>
+    </form>
+  </section>
+
+  <section id="duties">
+    <div class="sh"><h2>Обязанности</h2><span class="cnt" id="c-duties"></span></div>
+    <p class="sd">Кто за что отвечает в день мероприятия. Отметьте обязанность, когда она выполнена.</p>
+    <div class="panel" id="list-duties"></div>
+    <p class="form-t">Добавить обязанность</p>
+    <form class="form" id="form-duties" autocomplete="off">
+      <input name="g" id="duties-g" list="dl-duties" placeholder="Кто отвечает" aria-label="Кто отвечает">
+      <input name="t" id="duties-t" placeholder="Обязанность" aria-label="Обязанность" style="grid-column:span 2">
+      <input name="m" id="duties-m" placeholder="Заметка (необязательно)" aria-label="Заметка">
+      <button class="btn" type="submit">Добавить</button>
+      <datalist id="dl-duties"></datalist>
+    </form>
+  </section>
+
+  <section id="program">
+    <div class="sh"><h2>Программа вечера</h2><span class="cnt" id="c-program"></span></div>
+    <p class="sd">Тайминг с 17:00 до 00:00: встреча гостей, ужин, тосты, игры и танцы. Строки сортируются по времени.</p>
+    <div class="panel"><ul id="list-program"></ul></div>
+    <p class="form-t">Добавить пункт программы</p>
+    <form class="form" id="form-program" autocomplete="off">
+      <input name="time" id="program-time" type="time" aria-label="Время">
+      <select name="type" id="program-type" aria-label="Тип"></select>
+      <input name="title" id="program-title" placeholder="Название" aria-label="Название" style="grid-column:span 2">
+      <input name="who" id="program-who" placeholder="Ответственный" aria-label="Ответственный">
+      <button class="btn" type="submit">Добавить</button>
+    </form>
+  </section>
+
+  <section id="toasts">
+    <div class="sh"><h2>Тосты</h2><span class="cnt" id="c-toasts"></span></div>
+    <p class="sd">Очередь выступающих. Договоритесь с каждым заранее: тост до 3 минут, микрофон готов, бокалы налиты.</p>
+    <div class="panel"><ul id="list-toasts"></ul></div>
+    <p class="form-t">Добавить тост</p>
+    <form class="form" id="form-toasts" autocomplete="off">
+      <input name="who" id="toasts-who" placeholder="Кто говорит" aria-label="Кто говорит">
+      <input name="text" id="toasts-text" placeholder="О чём тост" aria-label="О чём тост" style="grid-column:span 2">
+      <input name="time" id="toasts-time" type="time" aria-label="Время">
+      <button class="btn" type="submit">Добавить</button>
+    </form>
+  </section>
+
+  <section id="games">
+    <div class="sh"><h2>Игры и развлечения</h2><span class="cnt" id="c-games"></span></div>
+    <p class="sd">Конкурсы для всех столов: короткие, без неловких заданий, с призами. Реквизит проверяйте накануне.</p>
+    <div class="panel"><ul id="list-games"></ul></div>
+    <p class="form-t">Добавить игру</p>
+    <form class="form" id="form-games" autocomplete="off">
+      <input name="title" id="games-title" placeholder="Название игры" aria-label="Название игры">
+      <input name="text" id="games-text" placeholder="Правила и реквизит" aria-label="Правила и реквизит" style="grid-column:span 2">
+      <input name="time" id="games-time" type="time" aria-label="Время, можно оставить пустым">
+      <button class="btn" type="submit">Добавить</button>
+    </form>
+  </section>
+
+  <footer>
+    <span>Изменения сохраняются в этом браузере.</span>
+    <button class="btn ghost" type="button" id="reset">Сбросить к примеру</button>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var KEY = 'svadba-200-v1';
+  var TYPES = [['cer','Церемония'],['toast','Тост'],['game','Игра'],['dance','Танцы'],['food','Еда'],['org','Организация']];
+  var TNAME = {}; TYPES.forEach(function(t){ TNAME[t[0]] = t[1]; });
+  var SECS = ['prep','duties','program','toasts','games'];
+
+  function uid(){ return Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-3); }
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function $(s){ return document.querySelector(s); }
+  function tkey(t){ if(!t) return 99999; var p = t.split(':'); var h = +p[0], m = +p[1]; return (h < 5 ? h + 24 : h) * 60 + m; }
+
+  function g(group, text, meta){ return {id:uid(), group:group, text:text, meta:meta||'', done:false}; }
+  function p(time, type, title, who){ return {id:uid(), time:time, type:type, title:title, who:who||'', done:false}; }
+  function t(who, text, time){ return {id:uid(), who:who, text:text, time:time||'', done:false}; }
+  function gm(title, text, time){ return {id:uid(), title:title, text:text, time:time||'', done:false}; }
+
+  function seed(){
+    return {
+      date:'',
+      prep:[
+        g('Площадка и рассадка','Забронировать зал на 200 гостей: 20 столов по 10 человек','за 8–10 мес.'),
+        g('Площадка и рассадка','Проверить сцену, звук, свет, выходы и парковку','за 3 мес.'),
+        g('Площадка и рассадка','Составить схему рассадки по столам, распечатать карточки','за 2 нед.'),
+        g('Площадка и рассадка','Утвердить схему зала с администратором и подрядчиками','за 1 нед.'),
+        g('Меню и напитки','Выбрать кейтеринг, меню на 200 порций с запасом 5%','за 4 мес.'),
+        g('Меню и напитки','Дегустация меню, учесть аллергии и вегетарианцев','за 2 мес.'),
+        g('Меню и напитки','Заказать свадебный торт и сладкий стол','за 2 мес.'),
+        g('Меню и напитки','Закупить напитки с запасом, согласовать расчёт с кейтерингом','за 2 нед.'),
+        g('Меню и напитки','Подтвердить итоговое число гостей и порций','за 1 нед.'),
+        g('Декор и цветы','Выбрать цветовую гамму и концепцию оформления','за 6 мес.'),
+        g('Декор и цветы','Заказать букет невесты, бутоньерки и цветы на столы','за 1 мес.'),
+        g('Декор и цветы','Фотозона, табличка с рассадкой, свечи, указатели','за 1 мес.'),
+        g('Ведущий, музыка, фото и видео','Нанять ведущего, DJ, фотографа и видеографа','за 6 мес.'),
+        g('Ведущий, музыка, фото и видео','Согласовать с ведущим сценарий, тосты и игры','за 1 мес.'),
+        g('Ведущий, музыка, фото и видео','Составить музыкальный список и список «не включать»','за 2 нед.'),
+        g('Ведущий, музыка, фото и видео','Подготовить слайд-шоу или видеопоздравление','за 2 нед.'),
+        g('Гости и приглашения','Составить список из 200 гостей, собрать контакты','за 5 мес.'),
+        g('Гости и приглашения','Разослать приглашения','за 2 мес.'),
+        g('Гости и приглашения','Собрать подтверждения участия','за 3 нед.'),
+        g('Гости и приглашения','Организовать трансфер и проживание для иногородних','за 1 мес.'),
+        g('Наряды, кольца, документы','Платье, костюм, обувь, примерка','за 2 мес.'),
+        g('Наряды, кольца, документы','Обручальные кольца','за 1 мес.'),
+        g('Наряды, кольца, документы','Подать заявление в ЗАГС, подготовить документы','за 2 мес.'),
+        g('Наряды, кольца, документы','Репетиция выхода и первого танца','за 1 нед.'),
+        g('Накануне и в день свадьбы','Собрать аварийный набор: нитки, пластыри, салфетки, зарядки'),
+        g('Накануне и в день свадьбы','Передать координатору список подрядчиков с телефонами'),
+        g('Накануне и в день свадьбы','Назначить ответственного за подарки и конверты'),
+        g('Накануне и в день свадьбы','Подготовить конверты для оплаты подрядчикам')
+      ],
+      duties:[
+        g('Координатор','Принять зал и подрядчиков, проверить готовность с 13:00'),
+        g('Координатор','Следить за таймингом и давать сигналы ведущему, кухне и DJ'),
+        g('Координатор','Решать вопросы гостей и подрядчиков, чтобы молодые не отвлекались'),
+        g('Ведущий','Вести программу с 17:00 до 00:00 по сценарию'),
+        g('Ведущий','Объявлять тосты и игры, следить за очередью выступающих'),
+        g('Ведущий','Согласовывать с кухней и DJ выход горячего и торта'),
+        g('Жених и невеста','Встретить гостей, принять поздравления'),
+        g('Жених и невеста','Подготовить благодарственный тост гостям'),
+        g('Жених и невеста','Передать кольца и документы свидетелю до начала'),
+        g('Свидетели','Подготовить тост и сопровождать молодых весь вечер'),
+        g('Свидетели','Помогать ведущему с играми и конкурсами'),
+        g('Свидетели','Следить за подарками и конвертами'),
+        g('Родители','Встретить молодых хлебом-солью в 17:30'),
+        g('Родители','Сказать приветственное слово в 17:45'),
+        g('Родители','Помочь рассадить старших гостей'),
+        g('Хостес, 2 человека','Встречать гостей с 16:30, выдавать карточки со столами'),
+        g('Хостес, 2 человека','Провожать к местам по схеме рассадки'),
+        g('Хостес, 2 человека','Помогать с гардеробом и парковкой'),
+        g('Администратор зала и официанты','Накрыть 20 столов до 16:30','10–12 официантов, один на 16–20 гостей'),
+        g('Администратор зала и официанты','Подавать закуски, горячее и торт по сигналу координатора'),
+        g('Администратор зала и официанты','Следить за напитками и менять посуду'),
+        g('DJ и звукорежиссёр','Настроить звук и свет до 16:00'),
+        g('DJ и звукорежиссёр','Играть по плейлисту, подавать музыку на тосты и игры'),
+        g('DJ и звукорежиссёр','Подготовить 3 микрофона для тостов'),
+        g('Фотограф и видеограф','Снять сборы гостей и выход молодых'),
+        g('Фотограф и видеограф','Групповые фото по столам'),
+        g('Фотограф и видеограф','Снять тосты, первый танец, торт и букет'),
+        g('Водитель и трансфер','Развезти гостей и молодых по графику после 00:00')
+      ],
+      program:[
+        p('17:00','org','Сбор гостей, приветственные напитки, карточки со столами','Хостес'),
+        p('17:30','cer','Выход молодых, встреча родителями хлебом-солью','Родители, ведущий'),
+        p('17:45','toast','Приветственный тост родителей','Родители'),
+        p('18:00','food','Холодные закуски и первый тост «За молодых»','Ведущий'),
+        p('18:20','game','Игра «Знакомство столов»','Ведущий'),
+        p('18:40','toast','Тост свидетеля и свидетельницы','Свидетели'),
+        p('19:00','dance','Первый танец молодых','Жених и невеста'),
+        p('19:10','dance','Танцевальный блок, открытый танцпол','DJ'),
+        p('19:40','game','Викторина «Кто лучше знает молодых»','Ведущий'),
+        p('20:00','food','Горячее блюдо','Официанты'),
+        p('20:15','toast','Тост друзей и коллег','Друзья'),
+        p('20:30','cer','Видеопоздравление и слайд-шоу','Видеограф'),
+        p('20:45','game','Танцевальный баттл между столами','DJ, ведущий'),
+        p('21:00','cer','Вынос и разрезание торта','Жених и невеста'),
+        p('21:15','toast','Тост бабушек и дедушек','Старшее поколение'),
+        p('21:25','dance','Танцевальный блок','DJ'),
+        p('22:00','game','Бросок букета и подвязки','Невеста, ведущий'),
+        p('22:20','game','Лотерея с призами для столов','Ведущий'),
+        p('22:40','toast','Благодарственный тост молодых','Жених и невеста'),
+        p('22:55','food','Сладкий стол, чай и кофе','Официанты'),
+        p('23:10','cer','Бенгальские огни или фейерверк на улице','Координатор'),
+        p('23:30','dance','Финальный танец и последний тост «За любовь»','Все гости'),
+        p('00:00','org','Проводы гостей, завершение вечера','Координатор')
+      ],
+      toasts:[
+        t('Родители жениха и невесты','Приветствие и напутствие молодым','17:45'),
+        t('Свидетель','Весёлая история о женихе и пожелание','18:40'),
+        t('Свидетельница','История о невесте и пожелание','18:40'),
+        t('Друзья молодых','Короткий тост на 2–3 минуты','20:15'),
+        t('Бабушки и дедушки','Мудрое напутствие семье','21:15'),
+        t('Жених и невеста','Благодарность гостям','22:40'),
+        t('Все гости','Общий тост «За любовь»','23:30')
+      ],
+      games:[
+        gm('Знакомство столов','Каждый стол придумывает название и девиз, лучший получает приз. Нужны листы и ручки.','18:20'),
+        gm('Кто лучше знает молодых','10 вопросов, гости поднимают карточки с ответами А/Б. Нужны карточки на каждый стол.','19:40'),
+        gm('Танцевальный баттл','Столы по очереди танцуют под короткие треки, победителя выбирают аплодисментами.','20:45'),
+        gm('Бросок букета и подвязки','Незамужние девушки и неженатые мужчины собираются на танцполе.','22:00'),
+        gm('Лотерея','Билеты лежат на столах, призы разыгрываются перед финалом.','22:20'),
+        gm('Фотоохота','Задания на карточках: сфотографироваться с родителями, с самым дальним гостем и так далее.','')
+      ]
+    };
+  }
+
+  var S = null;
+  try { S = JSON.parse(localStorage.getItem(KEY)); if (!S || !S.prep || !S.program) S = null; } catch(e){ S = null; }
+  if (!S) S = seed();
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+  function rowG(i, sec){
+    return '<li class="row' + (i.done ? ' done' : '') + '"><label class="chk"><input type="checkbox" data-sec="' + sec + '" data-id="' + i.id + '"' + (i.done ? ' checked' : '') + '><span class="box"></span><span class="txt">' + esc(i.text) + (i.meta ? '<small>' + esc(i.meta) + '</small>' : '') + '</span></label>' +
+      '<button class="del" type="button" data-del="' + sec + '" data-id="' + i.id + '" aria-label="Удалить: ' + esc(i.text) + '">×</button></li>';
+  }
+  function renderGrouped(sec){
+    var list = S[sec], order = [];
+    list.forEach(function(i){ if (order.indexOf(i.group) < 0) order.push(i.group); });
+    var html = order.map(function(gr){
+      var items = list.filter(function(i){ return i.group === gr; });
+      var d = items.filter(function(i){ return i.done; }).length;
+      return '<div class="grp"><div class="grp-h"><h3>' + esc(gr) + '</h3><span class="cnt">' + d + '/' + items.length + '</span></div><ul>' + items.map(function(i){ return rowG(i, sec); }).join('') + '</ul></div>';
+    }).join('');
+    $('#list-' + sec).innerHTML = html || '<p class="empty">Пока пусто. Добавьте первый пункт ниже.</p>';
+    $('#dl-' + sec).innerHTML = order.map(function(o){ return '<option value="' + esc(o) + '">'; }).join('');
+  }
+  function sorted(sec){ return S[sec].slice().sort(function(a,b){ return tkey(a.time) - tkey(b.time); }); }
+  function renderProgram(){
+    var items = sorted('program');
+    $('#list-program').innerHTML = items.map(function(i){
+      return '<li class="prow' + (i.done ? ' done' : '') + '"><div class="time">' + esc(i.time) + '</div><div class="pbody"><label class="chk"><input type="checkbox" data-sec="program" data-id="' + i.id + '"' + (i.done ? ' checked' : '') + '><span class="box"></span><span class="txt">' + esc(i.title) + '</span></label>' +
+        '<div class="pmeta"><span class="badge t-' + i.type + '">' + TNAME[i.type] + '</span>' + (i.who ? '<span>' + esc(i.who) + '</span>' : '') + '</div></div>' +
+        '<button class="del" type="button" data-del="program" data-id="' + i.id + '" aria-label="Удалить: ' + esc(i.title) + '">×</button></li>';
+    }).join('') || '<li><p class="empty">Программа пуста. Добавьте первый пункт ниже.</p></li>';
+  }
+  function renderSimple(sec, headKey, emptyTime){
+    var items = sorted(sec);
+    $('#list-' + sec).innerHTML = items.map(function(i){
+      var head = i[headKey];
+      var chip = i.time ? '<span class="chip">' + esc(i.time) + '</span>' : (emptyTime ? '<span class="chip">' + emptyTime + '</span>' : '');
+      return '<li class="row' + (i.done ? ' done' : '') + '"><label class="chk"><input type="checkbox" data-sec="' + sec + '" data-id="' + i.id + '"' + (i.done ? ' checked' : '') + '><span class="box"></span><span class="txt"><b>' + esc(head) + '</b>' + chip + (i.text ? '<small>' + esc(i.text) + '</small>' : '') + '</span></label>' +
+        '<button class="del" type="button" data-del="' + sec + '" data-id="' + i.id + '" aria-label="Удалить: ' + esc(head) + '">×</button></li>';
+    }).join('') || '<li><p class="empty">Пока пусто. Добавьте первый пункт ниже.</p></li>';
+  }
+  function stats(){
+    var all = 0, done = 0;
+    SECS.forEach(function(sec){
+      var d = S[sec].filter(function(i){ return i.done; }).length, n = S[sec].length;
+      all += n; done += d;
+      $('#c-' + sec).textContent = 'Готово ' + d + ' из ' + n;
+      $('#n-' + sec).textContent = d + '/' + n;
+    });
+    var pct = all ? Math.round(done * 100 / all) : 0;
+    $('#p-text').textContent = done + ' из ' + all;
+    $('#p-pct').textContent = pct + '%';
+    $('#p-fill').style.width = pct + '%';
+    $('#p-bar').setAttribute('aria-valuenow', pct);
+  }
+  function daysLeft(){
+    var el = $('#left');
+    if (!S.date) { el.textContent = ''; return; }
+    var p = S.date.split('-'); var d = new Date(+p[0], +p[1] - 1, +p[2]);
+    var now = new Date(); var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var n = Math.round((d - today) / 86400000);
+    el.textContent = n > 0 ? 'До свадьбы ' + n + ' дн.' : (n === 0 ? 'Свадьба сегодня' : 'Свадьба уже прошла');
+  }
+  function renderAll(){
+    renderGrouped('prep'); renderGrouped('duties'); renderProgram();
+    renderSimple('toasts','who',''); renderSimple('games','title','весь вечер');
+    stats(); daysLeft();
+  }
+
+  $('#program-type').innerHTML = TYPES.map(function(t){ return '<option value="' + t[0] + '">' + t[1] + '</option>'; }).join('');
+  $('#wdate').value = S.date || '';
+  $('#wdate').addEventListener('change', function(e){ S.date = e.target.value; save(); daysLeft(); });
+
+  document.addEventListener('change', function(e){
+    var el = e.target;
+    if (el.matches && el.matches('input[type=checkbox][data-id]')) {
+      var it = S[el.dataset.sec].filter(function(x){ return x.id === el.dataset.id; })[0];
+      if (!it) return;
+      it.done = el.checked; save(); renderAll();
+      var again = document.querySelector('input[data-id="' + el.dataset.id + '"]');
+      if (again) again.focus();
+    }
+  });
+  document.addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('[data-del]') : null;
+    if (b) {
+      var sec = b.dataset.del;
+      S[sec] = S[sec].filter(function(x){ return x.id !== b.dataset.id; });
+      save(); renderAll(); return;
+    }
+    var nav = e.target.closest ? e.target.closest('[data-go]') : null;
+    if (nav) {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      $('#' + nav.dataset.go).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'start'});
+    }
+  });
+
+  function bindForm(sec, required, keep, build){
+    var f = $('#form-' + sec);
+    f.addEventListener('input', function(e){ e.target.classList.remove('err'); });
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      var first = null;
+      required.forEach(function(n){
+        var el = f.elements[n];
+        if (!el.value.trim()) { el.classList.add('err'); if (!first) first = el; }
+      });
+      if (first) { first.focus(); return; }
+      var v = function(n){ return f.elements[n].value.trim(); };
+      var item = build(v);
+      item.id = uid(); item.done = false;
+      S[sec].push(item); save();
+      var kept = keep.map(function(n){ return f.elements[n].value; });
+      f.reset();
+      keep.forEach(function(n, k){ f.elements[n].value = kept[k]; });
+      renderAll();
+      var firstField = f.elements[required[required.length - 1]];
+      if (firstField) firstField.focus();
+    });
+  }
+  bindForm('prep', ['g','t'], ['g'], function(v){ return {group:v('g'), text:v('t'), meta:v('m')}; });
+  bindForm('duties', ['g','t'], ['g'], function(v){ return {group:v('g'), text:v('t'), meta:v('m')}; });
+  bindForm('program', ['time','title'], ['type'], function(v){ return {time:v('time'), type:v('type'), title:v('title'), who:v('who')}; });
+  bindForm('toasts', ['who'], [], function(v){ return {who:v('who'), text:v('text'), time:v('time')}; });
+  bindForm('games', ['title'], [], function(v){ return {title:v('title'), text:v('text'), time:v('time')}; });
+
+  var resetBtn = $('#reset'), resetTimer = null;
+  resetBtn.addEventListener('click', function(){
+    if (resetBtn.dataset.armed === '1') {
+      clearTimeout(resetTimer); resetBtn.dataset.armed = '0'; resetBtn.textContent = 'Сбросить к примеру';
+      var keepDate = S.date; S = seed(); S.date = keepDate; save(); renderAll();
+    } else {
+      resetBtn.dataset.armed = '1'; resetBtn.textContent = 'Точно сбросить? Нажмите ещё раз';
+      resetTimer = setTimeout(function(){ resetBtn.dataset.armed = '0'; resetBtn.textContent = 'Сбросить к примеру'; }, 4000);
+    }
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>
